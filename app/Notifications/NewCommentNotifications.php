@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\Post;
 
 class NewCommentNotifications extends Notification
 {
@@ -14,7 +15,7 @@ class NewCommentNotifications extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(protected Post $post)
     {
         //
     }
@@ -26,7 +27,8 @@ class NewCommentNotifications extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        //return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -48,7 +50,9 @@ class NewCommentNotifications extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'type'=>'comment',
+            'message'=>'New Comment to Post' . $this->post->title,
+            'post_id'=>$this->post->id,
         ];
     }
 }
