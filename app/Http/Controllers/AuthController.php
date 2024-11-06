@@ -73,6 +73,8 @@ class AuthController extends Controller
     public function editProfile(){
         return view("auth.edit");
     }
+
+    /*
     public function updateProfile(UpdateProfileRequest $request){
         if(Auth::check()){
             $id = Auth::id();
@@ -99,6 +101,37 @@ class AuthController extends Controller
             ]);
         }
         return redirect()->route('my.profile');
+        */
+
+        public function updateProfile(UpdateProfileRequest $request)
+        {
+            $user = Auth::user();
+
+            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->email = $request->email;
+
+            // Handle password update if the old password is provided
+            if ($request->filled('old_password') && Hash::check($request->old_password, $user->password)) {
+                $user->password = bcrypt($request->new_password);
+            } elseif ($request->filled('old_password')) {
+                return redirect()->back()->withErrors(['old_password' => 'This password is incorrect']);
+            }
+
+            // Update the avatar if a new one is uploaded
+            if ($request->hasFile('avatar')) {
+                if ($user->image && $user->image->image_path) {
+                    $this->deleteAvatar($user->image->image_path);
+                }
+                $uploadedAvatar = $this->uploadAvatar($request->file('avatar'));
+                $user->image()->updateOrCreate([], ['image_path' => $uploadedAvatar]);
+            }
+
+            $user->save();
+
+            return redirect()->route('my.profile')->with('success', 'Profile updated successfully');
+        }
+
 
     }
     public function logout(){
