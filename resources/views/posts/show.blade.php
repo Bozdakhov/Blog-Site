@@ -24,7 +24,29 @@
             @endif
 
             <h2 class="text-2xl font-bold mb-4">Comments</h2>
-            
+            <div class="space-y-4 mb-6">
+                @foreach ($post->comments as $comment)
+                    <div class="bg-gray-50 p-4 rounded-lg flex justify-between">
+                        <div>
+                            <p class="font-semibold">{{ $comment->user->name }}</p>
+                            <p class="text-gray-700">{{ $comment->comment }}</p>
+                        </div>
+                        @if (auth()->check() && auth()->user()->id == $comment->user_id)
+                            <div class="flex space-x-2">
+                                <form action="{{ route('comments.destroy', $comment->id) }}" method="POST"
+                                    onsubmit="return confirm('Do you want to delete this comment?')">
+                                    @csrf
+                                    @method('DELETE')
+
+
+                                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+
+                                </form>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
             @if (auth()->check())
                 <h3 class="text-xl font-bold mb-2">Add a Comment</h3>
                 <form action="{{ route('comments.store') }}" method="POST">
