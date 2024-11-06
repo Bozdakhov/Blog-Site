@@ -16,23 +16,33 @@ class CommentController extends Controller
     public function store(StoreCommentRequest $request)
     {
         $post = Post::findOrFail($request->post_id);
-        $post->comments()->create([
+
+        $comment = $post->comments()->create([
             'user_id' => Auth::id(),
-            'post_id' => $post->id,
             'comment' => $request->comment,
         ]);
-        $user = User::findOrFail($post->user_id);
-        $user->notify(new NewCommentNotification($post));
-        return redirect()->route('posts.show', $post->id);
+
+        // Notify post owner only if the commenter is not the post author
+        if (Auth::id() !== $post->user_id) {
+            $post->user->notify(new NewCommentNotification($post));
+        }
+
+        return redirect()->route('posts.show', $post->id)
+                         ->with('success', 'Comment added successfully!');
     }
 
     public function destroy(string $id)
     {
         $comment = Comment::findOrFail($id);
-        if(Auth::id() !== $comment->user_id){
-            abort(403);
+
+        // Ensure only the comment owner can delete it
+        if (Auth::id() !== $comment->user_id) {
+            abort(403, 'Unauthorized action');
         }
+
         $comment->delete();
-        return redirect()->route('posts.show', $comment->post_id);
+
+        return redirect()->route('posts.show', $comment->post_id)
+                         ->with('success', 'Comment deleted successfully!');
     }
 }

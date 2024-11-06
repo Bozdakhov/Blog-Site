@@ -7,9 +7,11 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 
+/*
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+*/
 
 Route::get('/', [AuthController::class,'index'])->name('home');
 
