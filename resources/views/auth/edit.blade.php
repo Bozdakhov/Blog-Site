@@ -41,7 +41,12 @@
                         <p style="color: red">{{'* ' . $message}}</p>
                     @enderror
                 </div>
-                //
+                <div class="mb-4">
+                    <label for="avatar" class="block text-sm font-medium text-gray-700">Avatar</label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="mt-2 text-sm text-gray-500">Current Avatar: {{auth()->user()->image->image_path}}</p>
+                </div>
                 <div>
                     @error('avatar')
                         <p style="color: red">{{'* ' . $message}}</p>
