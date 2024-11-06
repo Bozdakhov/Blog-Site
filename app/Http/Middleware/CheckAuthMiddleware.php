@@ -20,9 +20,11 @@ class CheckAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check()){
-            return back();
+        if (!Auth::check()) {
+            // Redirect to login page with a message if user is not authenticated
+            return redirect()->route('loginForm')->with('error', 'You must be logged in to access this page.');
         }
+
         return $next($request);
     }
 }
