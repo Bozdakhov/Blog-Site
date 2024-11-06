@@ -26,4 +26,15 @@ class LoginRequest extends FormRequest
             'password' => 'required|min:6',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.exists' => 'The email does not match our records.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'Password must be at least 6 characters long.',
+        ];
+    }
 }
