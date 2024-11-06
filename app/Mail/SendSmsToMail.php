@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
 class SendSmsToMail extends Mailable
 {
@@ -16,7 +17,7 @@ class SendSmsToMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(protected User $user)
     {
         //
     }
@@ -27,7 +28,7 @@ class SendSmsToMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Sms To Mail',
+            subject: 'BLOG SITE',
         );
     }
 
@@ -36,8 +37,13 @@ class SendSmsToMail extends Mailable
      */
     public function content(): Content
     {
+        $link = 'http://localhost:8000/email-verify?token=' . $this->user->verification_token;
         return new Content(
-            view: 'view.name',
+            view: 'email.send',
+            with: [
+                'user_name' => $this->user->name,
+                'link' => $link
+            ]
         );
     }
 
