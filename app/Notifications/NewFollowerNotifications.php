@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\User;
 
 class NewFollowerNotifications extends Notification
 {
@@ -14,7 +15,7 @@ class NewFollowerNotifications extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(protected $user)
     {
         //
     }
@@ -26,7 +27,8 @@ class NewFollowerNotifications extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        //return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -48,7 +50,9 @@ class NewFollowerNotifications extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'type' => 'follow',
+            'message' => $this->user->name . ' followed to you',
+            'username' => $this->user->username,
         ];
     }
 }
