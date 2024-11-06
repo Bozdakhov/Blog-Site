@@ -37,11 +37,7 @@
                     @endif
                 </div>
 
-                <div class="flex flex-wrap justify-center sm:justify-start space-x-4">
-                    <span class="font-semibold">{{$user->followers()->count() . ' Followers'}}</span>
-                    <span class="font-semibold">{{$user->following()->count() . ' Following'}}</span>
-                    <span class="font-semibold">{{$user->posts()->count() . ' Post'}}</span>
-                </div>
+                
             </div>
 
 
